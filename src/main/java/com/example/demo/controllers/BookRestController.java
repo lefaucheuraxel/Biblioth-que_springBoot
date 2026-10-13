@@ -1,7 +1,7 @@
-package com.example.demo.RestControllers;
+package com.example.demo.controllers;
 
-import com.example.demo.Entity.Books;
-import com.example.demo.Services.BookService;
+import com.example.demo.model.Books;
+import com.example.demo.services.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 

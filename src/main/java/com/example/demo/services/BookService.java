@@ -1,8 +1,9 @@
-package com.example.demo.Services;
+package com.example.demo.services;
 
-import com.example.demo.Entity.Books;
-import com.example.demo.Repositories.BookRepository;
+import com.example.demo.model.Books;
+import com.example.demo.persistence.BookRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +22,17 @@ public class BookService {
     public List<Books> getAllBooks() {
         // Logic to retrieve all books from the database or any other source
         // For demonstration purposes, returning an empty list
+        log.info("Getting all books");
         return bookRepository.findAll();
     }
 
     public Books getBookByIsbn(String isbn) {
+        log.info("Getting book by isbn {}", isbn);
         return bookRepository.findByIsbn(isbn);
     }
 
     public Books saveBook(Books book) {
+        log.info("Saving book {}", book);
         return bookRepository.save(book);
     }
 
@@ -38,6 +42,12 @@ public class BookService {
             throw new RuntimeException("Book with ID " + id + " not found.");
         }
         // Update the existing book's details with the new values
+        Books bookToUpdate = getBookToUpdate(book, existingBook);
+        log.info("Updating book {}", bookToUpdate);
+        return bookRepository.save(bookToUpdate);
+    }
+
+    private static @NonNull Books getBookToUpdate(Books book, Optional<Books> existingBook) {
         Books bookToUpdate = existingBook.get();
 
         if(book.getIsbn() != null) {
@@ -55,7 +65,7 @@ public class BookService {
         if(book.getNumberOfPages() != null) {
             bookToUpdate.setNumberOfPages(book.getNumberOfPages());
         }
-        return bookRepository.save(bookToUpdate);
+        return bookToUpdate;
     }
 
 }
