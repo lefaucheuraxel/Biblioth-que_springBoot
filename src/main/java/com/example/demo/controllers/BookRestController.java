@@ -1,7 +1,8 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.BookDto;
-import com.example.demo.model.Books;
+import com.example.demo.model.BookEntity;
+import com.example.demo.services.BookService;
 import com.example.demo.services.BookService;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
@@ -22,20 +23,20 @@ public class BookRestController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Books> getAllBooks() {
+    public List<BookEntity> getAllBooks() {
          return bookService.getAllBooks();
     }
 
      @GetMapping("/{isbn}")
      @ResponseStatus(HttpStatus.OK)
-     public Books getBookByIsbn(@PathVariable String isbn) {
+     public BookEntity getBookByIsbn(@PathVariable String isbn) {
          return bookService.getBookByIsbn(isbn);
      }
 
      @PostMapping
      @ResponseStatus(HttpStatus.CREATED)
-     public Books createBook(@Valid @RequestBody BookDto.PostInput input) throws  BadRequestException {
-         Books book = new Books();
+     public BookEntity createBook(@Valid @RequestBody BookDto.PostInput input) throws  BadRequestException {
+         BookEntity book = new BookEntity();
 
          book.setIsbn(input.getIsbn());
          book.setTitle(input.getTitle());
@@ -47,8 +48,8 @@ public class BookRestController {
 
      @PutMapping("/{id}")
      @ResponseStatus(HttpStatus.OK)
-     public Books updateBook(@Valid @RequestBody BookDto.UpdateInput input, @PathVariable Long id) throws BadRequestException {
-         Books book = new Books();
+     public BookEntity updateBook(@Valid @RequestBody BookDto.UpdateInput input, @PathVariable Long id) throws BadRequestException {
+         BookEntity book = new BookEntity();
 
          book.setIsbn(input.getIsbn());
          book.setTitle(input.getTitle());

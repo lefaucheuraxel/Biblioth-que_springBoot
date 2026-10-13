@@ -1,13 +1,13 @@
 package com.example.demo.persistence;
 
-import com.example.demo.model.Books;
+import com.example.demo.model.BookEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface BookRepository extends JpaRepository<Books, Long> {
+public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
-    public  Books findByIsbn(String isbn);
+    public  BookEntity findByIsbn(String isbn);
 
 }

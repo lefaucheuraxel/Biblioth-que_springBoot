@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dto.BookDto;
-import com.example.demo.model.Books;
+import com.example.demo.model.BookEntity;
 import com.example.demo.model.exceptions.BookCreationException;
 import com.example.demo.persistence.BookRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -22,23 +22,25 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Books> getAllBooks() {
+    public List<BookEntity> getAllBooks() {
         log.info("Retrieving all books");
         return bookRepository.findAll();
     }
 
-    public Books getBookByIsbn(@NonNull String isbn) {
+    public BookEntity getBookByIsbn(@NonNull String isbn) {
         log.info("Retrieving book with ISBN {}", isbn);
-        Books book = bookRepository.findByIsbn(isbn);
+        BookEntity book = bookRepository.findByIsbn(isbn);
         if (book == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Book with ISBN " + isbn + " not found.");
         }
         return book;
     }
 
-    public Books saveBook(@NonNull Books book) throws BookCreationException {
+    public BookEntity saveBook(@NonNull BookEntity book) throws BookCreationException {
         if (book.getIsbn() == null || book.getIsbn().isBlank()) {
             throw new BookCreationException("ISBN must not be blank.");
+        }else if(bookRepository.findByIsbn(book.getIsbn()) != null) {
+            throw new BookCreationException("Book with ISBN " + book.getIsbn() + " already exists.");
         }
         if (book.getTitle() == null || book.getTitle().isBlank()) {
             throw new BookCreationException("Title must not be blank.");
@@ -55,19 +57,19 @@ public class BookService {
         return book;
     }
 
-    public Books updateBook(@NonNull Books book, @NonNull Long id) throws BadRequestException {
+    public BookEntity updateBook(@NonNull BookEntity book, @NonNull Long id) throws BadRequestException {
 
-        Books existingBook = bookRepository.findById(id)
+        BookEntity existingBook = bookRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Book with ID " + id + " not found."));
 
-        Books bookUpdated = getBookUpdate(book, existingBook);
+        BookEntity bookUpdated = getBookUpdate(book, existingBook);
         log.info("Updating book {}", bookUpdated);
 
         bookRepository.save(bookUpdated);
         return bookUpdated;
     }
 
-    private static @NonNull Books getBookUpdate(@NonNull Books book, @NonNull Books bookToUpdate) {
+    private static @NonNull BookEntity getBookUpdate(@NonNull BookEntity book, @NonNull BookEntity bookToUpdate) {
         if(book.getIsbn() != null) {
             bookToUpdate.setIsbn(book.getIsbn());
         }
