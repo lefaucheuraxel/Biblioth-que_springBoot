@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import com.example.demo.dto.BookDto;
 import com.example.demo.model.Books;
+import com.example.demo.model.exceptions.BookCreationException;
 import com.example.demo.persistence.BookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
@@ -26,7 +27,7 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Books getBookByIsbn(String isbn) {
+    public Books getBookByIsbn(@NonNull String isbn) {
         log.info("Retrieving book with ISBN {}", isbn);
         Books book = bookRepository.findByIsbn(isbn);
         if (book == null) {
@@ -35,51 +36,38 @@ public class BookService {
         return book;
     }
 
-    public Books saveBook(BookDto.PostInput input) throws BadRequestException {
-        if (input == null) {
-            throw new BadRequestException("Book data must not be null.");
+    public Books saveBook(@NonNull Books book) throws BookCreationException {
+        if (book.getIsbn() == null || book.getIsbn().isBlank()) {
+            throw new BookCreationException("ISBN must not be blank.");
         }
-        if (input.getIsbn() == null || input.getIsbn().isBlank()) {
-            throw new BadRequestException("ISBN must not be blank.");
+        if (book.getTitle() == null || book.getTitle().isBlank()) {
+            throw new BookCreationException("Title must not be blank.");
         }
-        if (input.getTitle() == null || input.getTitle().isBlank()) {
-            throw new BadRequestException("Title must not be blank.");
+        if (book.getAuthor() == null || book.getAuthor().isBlank()) {
+            throw new BookCreationException("Author must not be blank.");
         }
-        if (input.getAuthor() == null || input.getAuthor().isBlank()) {
-            throw new BadRequestException("Author must not be blank.");
+        if (book.getNumberOfPages() == null || book.getNumberOfPages() <= 0) {
+            throw new BookCreationException("Number of pages must be greater than zero.");
         }
-        if (input.getNumberOfPages() == null || input.getNumberOfPages() <= 0) {
-            throw new BadRequestException("Number of pages must be greater than zero.");
-        }
-
-        Books book = new Books();
-
-        book.setIsbn(input.getIsbn());
-        book.setTitle(input.getTitle());
-        book.setAuthor(input.getAuthor());
-        book.setPublicationYear(input.getPublicationYear());
-        book.setNumberOfPages(input.getNumberOfPages());
 
         log.info("Saving book {}", book);
-
-        return bookRepository.save(book);
+        bookRepository.save(book);
+        return book;
     }
 
-    public Books updateBook(BookDto.UpdateInput input, Long id) throws BadRequestException {
-        if (input == null) {
-            throw new BadRequestException("Book data must not be null.");
-        }
+    public Books updateBook(@NonNull Books book, @NonNull Long id) throws BadRequestException {
+
         Books existingBook = bookRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Book with ID " + id + " not found."
-                ));
-        Books bookToUpdate = getBookToUpdate(input, existingBook);
-        log.info("Updating book {}", bookToUpdate);
-        return bookRepository.save(bookToUpdate);
+                .orElseThrow(() -> new BadRequestException("Book with ID " + id + " not found."));
+
+        Books bookUpdated = getBookUpdate(book, existingBook);
+        log.info("Updating book {}", bookUpdated);
+
+        bookRepository.save(bookUpdated);
+        return bookUpdated;
     }
 
-    private static @NonNull Books getBookToUpdate(BookDto.UpdateInput book, Books bookToUpdate) {
+    private static @NonNull Books getBookUpdate(@NonNull Books book, @NonNull Books bookToUpdate) {
         if(book.getIsbn() != null) {
             bookToUpdate.setIsbn(book.getIsbn());
         }

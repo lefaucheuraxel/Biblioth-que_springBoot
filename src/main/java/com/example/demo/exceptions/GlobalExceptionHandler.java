@@ -1,5 +1,6 @@
 package com.example.demo.exceptions;
 
+import com.example.demo.model.exceptions.BookCreationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ProblemDetail> catchBadRequest(BadRequestException e) {
         log.warn("Request rejected: {}", e.getMessage());
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
+    }
+
+    @ExceptionHandler(BookCreationException.class)
+    public ResponseEntity<ProblemDetail> catchBookCreationException(BookCreationException e) {
+        log.warn("Book creation failed: {}", e.getMessage());
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(pd);
     }
