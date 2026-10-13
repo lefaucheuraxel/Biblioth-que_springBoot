@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import com.example.demo.dto.BookDto;
 import com.example.demo.model.Books;
 import com.example.demo.services.BookService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/books")
 public class BookRestController {
-
 
     private final BookService bookService;
 
@@ -32,12 +32,13 @@ public class BookRestController {
      }
 
      @PostMapping
-     public Books createBook(@RequestBody Books book) {
-        return bookService.saveBook(book);
+     public Books createBook(@RequestBody BookDto.PostInput input) {
+
+        return bookService.saveBook(input);
      }
 
      @PutMapping("/{id}")
-     public Books updateBook(@RequestBody Books book, @PathVariable Long id) {
-        return bookService.updateBook(book, id);
+     public Books updateBook(@RequestBody BookDto.UpdateInput input, @PathVariable Long id) {
+        return bookService.updateBook(input, id);
     }
 }

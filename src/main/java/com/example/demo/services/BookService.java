@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.dto.BookDto;
 import com.example.demo.model.Books;
 import com.example.demo.persistence.BookRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,23 +32,32 @@ public class BookService {
         return bookRepository.findByIsbn(isbn);
     }
 
-    public Books saveBook(Books book) {
+    public Books saveBook(BookDto.PostInput input) {
+
+        Books book = new Books();
+        book.setIsbn(input.getIsbn());
+        book.setTitle(input.getTitle());
+        book.setAuthor(input.getAuthor());
+        book.setPublicationYear(input.getPublicationYear());
+        book.setNumberOfPages(input.getNumberOfPages());
+
         log.info("Saving book {}", book);
+
         return bookRepository.save(book);
     }
 
-    public Books updateBook(Books book, Long id) {
+    public Books updateBook(BookDto.UpdateInput input, Long id) {
         Optional<Books> existingBook = bookRepository.findById(id); // Check if the book exists
         if (existingBook.isEmpty()) {
             throw new RuntimeException("Book with ID " + id + " not found.");
         }
         // Update the existing book's details with the new values
-        Books bookToUpdate = getBookToUpdate(book, existingBook);
+        Books bookToUpdate = getBookToUpdate(input, existingBook);
         log.info("Updating book {}", bookToUpdate);
         return bookRepository.save(bookToUpdate);
     }
 
-    private static @NonNull Books getBookToUpdate(Books book, Optional<Books> existingBook) {
+    private static @NonNull Books getBookToUpdate(BookDto.UpdateInput book, Optional<Books> existingBook) {
         Books bookToUpdate = existingBook.get();
 
         if(book.getIsbn() != null) {
