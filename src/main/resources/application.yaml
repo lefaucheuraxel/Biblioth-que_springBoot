@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: demo
+  main:
+    web-application-type: servlet
+  datasource:
+    url: jdbc:mysql://localhost:3306/demo_spring
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
