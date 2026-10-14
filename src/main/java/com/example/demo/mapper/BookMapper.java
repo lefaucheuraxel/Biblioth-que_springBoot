@@ -1,8 +1,8 @@
 package com.example.demo.mapper;
 
-import com.example.demo.dto.BookCreateRequest;
-import com.example.demo.dto.BookResponse;
-import com.example.demo.dto.BookUpdateRequest;
+import com.example.demo.dto.book.BookCreateRequest;
+import com.example.demo.dto.book.BookResponse;
+import com.example.demo.dto.book.BookUpdateRequest;
 import com.example.demo.entity.BookEntity;
 
 import java.util.Optional;

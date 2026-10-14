@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.book;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
@@ -8,9 +8,9 @@ import jakarta.validation.constraints.Positive;
  * The pattern rejects blank strings while still accepting null.
  */
 public record BookUpdateRequest(
-        @Pattern(regexp = BookUpdateRequest.NOT_BLANK_IF_PRESENT) String isbn,
-        @Pattern(regexp = BookUpdateRequest.NOT_BLANK_IF_PRESENT) String title,
-        @Pattern(regexp = BookUpdateRequest.NOT_BLANK_IF_PRESENT) String author,
+        @Pattern(regexp = NOT_BLANK_IF_PRESENT) String isbn,
+        @Pattern(regexp = NOT_BLANK_IF_PRESENT) String title,
+        @Pattern(regexp = NOT_BLANK_IF_PRESENT) String author,
         Integer publicationYear,
         @Positive Long numberOfPages
 ) {
