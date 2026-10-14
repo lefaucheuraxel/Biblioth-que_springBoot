@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.dto.user.UserCreateRequest;
+import com.example.demo.dto.user.UserDeleteRequest;
 import com.example.demo.dto.user.UserResponse;
 import com.example.demo.dto.user.UserUpdateRequest;
 import com.example.demo.service.UserService;
@@ -34,6 +35,12 @@ public class UserRestController {
     @PutMapping("/{id}")
     public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateRequest request) {
         return userService.updateUser(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse deleteUser(@PathVariable Long id, @Valid @RequestBody UserDeleteRequest request) {
+        return userService.deleteUser(id, request);
     }
 
 }

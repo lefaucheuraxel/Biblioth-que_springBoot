@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.user.UserCreateRequest;
+import com.example.demo.dto.user.UserDeleteRequest;
 import com.example.demo.dto.user.UserResponse;
 import com.example.demo.dto.user.UserUpdateRequest;
 import com.example.demo.entity.UserEntity;
@@ -63,6 +64,23 @@ public class UserService {
             existing.setPassword(passwordEncoder.encode(user.password()));
         }
         return UserMapper.toResponse(userRepository.save(existing));
+    }
+
+    @Transactional
+    public UserResponse deleteUser(Long id, UserDeleteRequest request) {
+        Optional<UserEntity> existing = userRepository.findById(id);
+        if (existing.isEmpty()) {
+            throw new RuntimeException("User with id " + id + " not found.");
+        }
+        if(!existing.get().getUsername().equals(request.username())) {
+            throw new RuntimeException("Username does not match for user with id " + id);
+        }
+        log.info("Deleting user with id {} and username {}", id, request.username());
+
+        UserEntity user = existing.get();
+        userRepository.delete(user);
+
+        return UserMapper.toResponse(user);
     }
 
 

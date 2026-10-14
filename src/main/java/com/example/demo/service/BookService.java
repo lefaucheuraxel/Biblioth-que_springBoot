@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.book.BookCreateRequest;
+import com.example.demo.dto.book.BookDeleteRequest;
 import com.example.demo.dto.book.BookResponse;
 import com.example.demo.dto.book.BookUpdateRequest;
 import com.example.demo.entity.BookEntity;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Optional;
 
@@ -78,5 +81,21 @@ public class BookService {
             throw new DuplicateIsbnException(book.getIsbn(), e);
         }
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public BookResponse deleteBook(@PathVariable Long id, BookDeleteRequest request) {
+        log.info("Deleting book with ID {} and ISBN {}", id, request.isbn());
+        BookEntity existing = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Book with ID " + id + " not found."));
+
+        if (!existing.getIsbn().equals(request.isbn())) {
+            throw new IllegalArgumentException("ISBN does not match for book with ID " + id);
+        }
+
+        bookRepository.delete(existing);
+        return BookMapper.toResponse(existing);
+    }
+
 
 }
