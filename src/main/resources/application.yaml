@@ -11,3 +11,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+library:
+  loan:
+    max-active-loans: 5

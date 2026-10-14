@@ -26,9 +26,11 @@ import java.util.Optional;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final LoanService loanService;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, LoanService loanService) {
         this.bookRepository = bookRepository;
+        this.loanService = loanService;
     }
 
     public Page<BookResponse> getAllBooks(Pageable pageable) {
@@ -93,6 +95,7 @@ public class BookService {
             throw new IllegalArgumentException("ISBN does not match for book with ID " + id);
         }
 
+        loanService.deleteLoansOfBook(existing.getId());
         bookRepository.delete(existing);
         return BookMapper.toResponse(existing);
     }

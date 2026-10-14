@@ -3,7 +3,9 @@ package com.example.demo.controller;
 import com.example.demo.dto.book.BookCreateRequest;
 import com.example.demo.dto.book.BookResponse;
 import com.example.demo.dto.book.BookUpdateRequest;
+import com.example.demo.dto.loan.BookAvailabilityResponse;
 import com.example.demo.service.BookService;
+import com.example.demo.service.LoanService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class BookRestController {
 
     private final BookService bookService;
+    private final LoanService loanService;
 
-    public BookRestController(BookService bookService) {
+    public BookRestController(BookService bookService, LoanService loanService) {
         this.bookService = bookService;
+        this.loanService = loanService;
     }
 
     @GetMapping
@@ -29,6 +33,11 @@ public class BookRestController {
     @GetMapping("/{isbn}")
     public BookResponse getBookByIsbn(@PathVariable String isbn) {
         return bookService.getBookByIsbn(isbn);
+    }
+
+    @GetMapping("/{isbn}/availability")
+    public BookAvailabilityResponse getBookAvailability(@PathVariable String isbn) {
+        return loanService.getAvailability(isbn);
     }
 
     @PostMapping

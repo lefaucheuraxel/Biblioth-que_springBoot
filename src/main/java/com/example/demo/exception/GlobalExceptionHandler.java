@@ -27,6 +27,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem(HttpStatus.CONFLICT, e.getMessage());
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ProblemDetail> catchUserNotFound(UserNotFoundException e) {
+        log.warn("User not found: {}", e.getMessage());
+        return problem(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(LoanNotFoundException.class)
+    public ResponseEntity<ProblemDetail> catchLoanNotFound(LoanNotFoundException e) {
+        log.warn("Loan not found: {}", e.getMessage());
+        return problem(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(LoanConflictException.class)
+    public ResponseEntity<ProblemDetail> catchLoanConflict(LoanConflictException e) {
+        log.warn("Loan conflict: {}", e.getMessage());
+        return problem(HttpStatus.CONFLICT, e.getMessage());
+    }
+
     @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
     public ResponseEntity<ProblemDetail> catchConcurrentModification(ObjectOptimisticLockingFailureException e) {
         log.warn("Concurrent modification detected: {}", e.getMessage());

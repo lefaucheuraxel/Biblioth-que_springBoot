@@ -21,10 +21,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LoanService loanService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, LoanService loanService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.loanService = loanService;
     }
 
     public UserResponse findByUsername(String username) {
@@ -78,6 +80,7 @@ public class UserService {
         log.info("Deleting user with id {} and username {}", id, request.username());
 
         UserEntity user = existing.get();
+        loanService.deleteLoansOfUser(user.getId());
         userRepository.delete(user);
 
         return UserMapper.toResponse(user);
