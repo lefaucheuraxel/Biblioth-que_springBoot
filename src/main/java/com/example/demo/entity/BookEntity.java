@@ -1,30 +1,26 @@
-package com.example.demo.Entity;
+package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
-public class Books {
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Table(name = "books")
+public class BookEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter @Setter
     private Long id;
 
-    @Getter @Setter
     @Column(unique = true)
     private String isbn;
 
-    @Getter @Setter
     private String title;
-
-    @Getter @Setter
     private String author;
-
-    @Getter @Setter
     private int publicationYear;
-
-    @Getter @Setter
     private Long numberOfPages;
 
 }
